@@ -12,7 +12,6 @@ sdpHttpClient.interceptors.request.use(async (config) => {
 
   config.headers.set("Authorization", `Zoho-oauthtoken ${token}`);
   config.headers.set("Accept", "application/vnd.manageengine.sdp.v3+json");
-  config.headers.set("Content-Type", "application/json");
 
   return config;
 });

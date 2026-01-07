@@ -3,6 +3,7 @@ import clienteRoutes from "./routes/pronobis.routes";
 import pisosRoutes from "./routes/pisos.routes";
 import inmueblesRoutes from "./routes/inmuebles.routes";
 import sdpRoutes from "./routes/spd.routes";
+import poblarCamposRoutes from "./routes/poblarCampos.routes";
 import cors from "cors";
 
 const app = express();
@@ -13,5 +14,6 @@ app.use("/api/cliente-proyectos", clienteRoutes);
 app.use("/api/pisos", pisosRoutes);
 app.use("/api/inmuebles", inmueblesRoutes);
 app.use("/api/sdp", sdpRoutes);
+app.use("/api/poblar-campos", poblarCamposRoutes);
 
 export default app;
