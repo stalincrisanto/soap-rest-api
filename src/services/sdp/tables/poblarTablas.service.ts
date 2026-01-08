@@ -5,7 +5,7 @@ export const poblarTablasPorCedula = async (cedula: string) => {
   const { data } = await obtenerClienteYProyectos(cedula);
 
   const proyectos = data.proyectos ?? [];
-  const cliente = data.cliente ?? "";
+  const cliente = data.cliente?.cliente ?? "";
 
   if (proyectos.length === 0) {
     return {
@@ -19,5 +19,5 @@ export const poblarTablasPorCedula = async (cedula: string) => {
   //     (p) => p.nombreProyecto
   //   );
 
-  await agregarValoresCedula(cedula);
+  await agregarValoresCedula(cedula, cliente);;
 };
