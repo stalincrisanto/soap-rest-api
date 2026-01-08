@@ -11,16 +11,17 @@ export async function getZohoAccessToken(): Promise<string> {
 
   const params = new URLSearchParams({
     grant_type: "refresh_token",
-    client_id: env.zohoClientId,
-    client_secret: env.zohoClientSecret,
-    refresh_token: env.zohoRefreshToken,
+    client_id: env.ZOHO_CLIENT_ID,
+    client_secret: env.ZOHO_CLIENT_SECRET,
+    refresh_token: env.ZOHO_REFRESH_TOKEN,
   });
 
-  const { data } = await axios.post(env.zohoTokenUrl, params, {
+  const { data } = await axios.post(env.ZOHO_TOKEN_URL, params, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
 
   accessToken = data.access_token;
+
   expiresAt = Date.now() + data.expires_in * 1000 - 60_000;
 
   return accessToken || "";

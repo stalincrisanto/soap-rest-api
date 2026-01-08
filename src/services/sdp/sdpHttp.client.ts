@@ -1,9 +1,9 @@
-import axios from "axios";
-import { getZohoAccessToken } from "./zohoToken.service";
 import { env } from "./config";
+import { getZohoAccessToken } from "./zohoToken.service";
+import axios from "axios";
 
 export const sdpHttpClient = axios.create({
-  baseURL: env.sdpBaseUrl,
+  baseURL: `${env.SDP_BASE_URL}/app/${env.SDP_PORTAL_ID}`,
   timeout: 30_000,
 });
 
