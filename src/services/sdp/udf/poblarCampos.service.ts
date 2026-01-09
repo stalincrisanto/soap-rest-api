@@ -1,4 +1,4 @@
-import { obtenerClienteYProyectos } from "../pronobis.service";
+import { obtenerClienteYProyectos } from "../../pronobis/pronobis.service";
 import { actualizarUdfProyectos } from "./sdpUdf.service";
 
 const UDF_PROYECTOS_ID = "256297000000033015";

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { poblarCamposPorCedula } from "../services/sdp/poblarCampos.service";
-import { poblarTablasPorCedula } from "../services/sdp/tables/poblarTablas.service";
+import { poblarCamposPorCedula } from "../services/sdp/udf/poblarCampos.service";
+import { poblarTablasPorCedula } from "../services/sdp/custom-modules/poblarTablas.service";
 
 export const poblarTablasController = async (req: Request, res: Response) => {
   const { cedula } = req.params;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import xml2js from "xml2js";
-import { parseSoapDataset } from "./soapGenericParser";
+import { parseSoapDataset } from "../utils/soapGenericParser";
 
 const BASE_URL =
   "http://200.41.89.145:8091/IntegracionPortalPronobisTest/WebServiceInmobiliaria.asmx";

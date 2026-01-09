@@ -1,5 +1,5 @@
-import { sdpHttpClient } from "./sdpHttp.client";
 import qs from "qs";
+import { sdpHttpClient } from "../../../clients/sdpHttp.client";
 
 export async function actualizarUdfProyectos(
   udfFieldId: string,

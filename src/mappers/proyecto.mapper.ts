@@ -1,4 +1,4 @@
-import { Proyecto } from "../types/pronobisClienteProyectos";
+import { Proyecto } from "../types/pronobis/pronobisClienteProyectos";
 
 export const mapProyecto = (row: any): Proyecto => ({
   codigoCompania: row.CCiCompania?.trim(),

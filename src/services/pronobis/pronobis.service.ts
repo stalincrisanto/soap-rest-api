@@ -1,9 +1,8 @@
-import { callPronobisGet } from "./httpClient";
-import { mapCliente } from "./cliente.mapper";
-import { mapProyecto } from "./proyecto.mapper";
+import { callPronobisGet } from "../../clients/pronobis.httpClient";
+import { mapCliente } from "../../mappers/cliente.mapper";
+import { mapProyecto } from "../../mappers/proyecto.mapper";
 
 export const obtenerClienteYProyectos = async (cedula: string) => {
-  // 1. Consultar cliente
   const clienteRows = await callPronobisGet(
     "PronobisTrack_Consulta_Cliente",
     { sCCiIdentificacion: cedula }
@@ -14,7 +13,6 @@ export const obtenerClienteYProyectos = async (cedula: string) => {
       ? mapCliente(clienteRows[0])
       : null;
 
-  // 2. Consultar proyectos
   const proyectoRows = await callPronobisGet(
     "PronobisTrack_Consulta_Proyectos",
     { sCCiIdentificacion: cedula }

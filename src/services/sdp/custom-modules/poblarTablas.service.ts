@@ -1,4 +1,4 @@
-import { obtenerClienteYProyectos } from "../../pronobis.service";
+import { obtenerClienteYProyectos } from "../../pronobis/pronobis.service";
 import { agregarValoresCedula } from "./sdpCustomModules.service";
 
 export const poblarTablasPorCedula = async (cedula: string) => {

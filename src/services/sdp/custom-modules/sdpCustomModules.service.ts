@@ -1,10 +1,9 @@
-import { sdpHttpClient } from "../sdpHttp.client";
+import { sdpHttpClient } from "../../../clients/sdpHttp.client";
 
 export async function agregarValoresCedula(
   cedula: string,
   cliente: string
 ): Promise<void> {
-  console.log("CLIENTE---------------------------------", cliente);
 
   try {
     const body = new URLSearchParams({
@@ -49,5 +48,3 @@ export async function agregarValoresCedula(
     throw error;
   }
 }
-
-// {"cm_cliente":{"cm_attributes":{"ref_cedula":{"id":"256297000000616001"},"txt_name":"Nombre de prueba"}}}

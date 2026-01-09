@@ -1,5 +1,5 @@
 import axios from "axios";
-import { env } from "./config";
+import { env } from "../../config/sdp.config";
 
 let accessToken: string | null = null;
 let expiresAt = 0;
