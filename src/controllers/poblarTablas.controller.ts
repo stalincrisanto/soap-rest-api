@@ -1,13 +1,27 @@
 import { Request, Response } from "express";
-import { poblarCamposPorCedula } from "../services/sdp/udf/poblarCampos.service";
-import { poblarTablasPorCedula } from "../services/sdp/custom-modules/poblarTablas.service";
+import { poblarTablasSdp } from "../services/sdp/custom-modules/poblarTablas.service";
 
 export const poblarTablasController = async (req: Request, res: Response) => {
-  const { cedula } = req.params;
+  try {
+    const { cedula } = req.params;
 
-  console.log("Valor de la cedula---->", cedula);
+    if (!cedula) {
+      return res.status(400).json({
+        success: false,
+        message: "Parámetro cédula obligatorio",
+      });
+    }
 
-  const response = await poblarTablasPorCedula(cedula);
+    await poblarTablasSdp(cedula);
 
-  res.json(response);
+    return res.status(200).json({
+      success: true,
+      message: "Operación ejecutada correctamente",
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Error al ejecutar la operación",
+    });
+  }
 };

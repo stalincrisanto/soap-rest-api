@@ -1,23 +1,32 @@
 import { obtenerClienteYProyectos } from "../../pronobis/pronobis.service";
-import { agregarValoresCedula } from "./sdpCustomModules.service";
+import { obtenerClienteYCedulaPorValorCedula } from "../helpers/obtenerClienteYCedulaPorCedula.service";
+import { poblarCedulaYCliente } from "./sdpPopulateClientAndCardNumber.service";
+import { poblarProyectos } from "./spdPopulateProjects.service";
 
-export const poblarTablasPorCedula = async (cedula: string) => {
+export const poblarTablasSdp = async (cedula: string) => {
   const { data } = await obtenerClienteYProyectos(cedula);
 
-  const proyectos = data.proyectos ?? [];
-  const cliente = data.cliente?.cliente ?? "";
+  const cliente = data.cliente?.cliente;
+  const proyectos = data.proyectos?.map((p) => p.nombreProyecto) ?? [];
 
-  if (proyectos.length === 0) {
-    return {
-      proyectos: 0,
-      pisos: 0,
-    };
+  if (!cliente) {
+    throw new Error(`No existe cliente para la cédula ${cedula}`);
   }
 
-  // 2️⃣ Poblar UDF de proyectos (solo nombres)
-  //   const nombresProyectos = proyectos.map(
-  //     (p) => p.nombreProyecto
-  //   );
+  let clienteId: string;
+  let cedulaId: string;
 
-  await agregarValoresCedula(cedula, cliente);;
+  const existente = await obtenerClienteYCedulaPorValorCedula(cedula);
+
+  if (existente) {
+    ({ clienteId, cedulaId } = existente);
+  } else {
+    const result = await poblarCedulaYCliente(cedula, cliente);
+    clienteId = result.clienteId;
+    cedulaId = result.cedulaId;
+  }
+
+  if (proyectos.length > 0) {
+    await poblarProyectos(proyectos, cedulaId, clienteId);
+  }
 };
