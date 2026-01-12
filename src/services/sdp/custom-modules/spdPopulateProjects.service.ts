@@ -3,13 +3,12 @@ import { mapProyectoToSdpInput } from "../../../mappers/proyectoSdp.mapper";
 
 export async function poblarProyectos(
   proyectos: string[],
-  cedulaId: string,
-  clienteId: string
+  cedula: string,
 ): Promise<void> {
   for (const nombreProyecto of proyectos) {
     const body = new URLSearchParams({
       input_data: JSON.stringify(
-        mapProyectoToSdpInput(nombreProyecto, cedulaId, clienteId)
+        mapProyectoToSdpInput(nombreProyecto, cedula)
       ),
     });
 
