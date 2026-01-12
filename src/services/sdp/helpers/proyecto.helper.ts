@@ -14,3 +14,21 @@ export const obtenerProyectosNuevos = (
 
   return proyectosPronobis.filter((p) => !setSdp.has(p.toLowerCase()));
 };
+
+export const obtenerPisosNuevos = (
+  pisosPronobis: string[],
+  pisosSdp: string[]
+): string[] => {
+  const setSdp = new Set(pisosSdp.map((p) => p.toLowerCase()));
+
+  return pisosPronobis.filter((p) => !setSdp.has(p.toLowerCase()));
+};
+
+export const obtenerInmueblesNuevos = (
+  inmueblesPronobis: string[],
+  inmueblesSdp: string[]
+): string[] => {
+  const setSdp = new Set(inmueblesSdp.map((i) => i.toLowerCase()));
+
+  return inmueblesPronobis.filter((i) => !setSdp.has(i.toLowerCase()));
+};
