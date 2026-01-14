@@ -3,7 +3,7 @@ import xml2js from "xml2js";
 import { parseSoapDataset } from "../utils/soapGenericParser";
 
 const BASE_URL =
-  "http://200.41.89.145:8091/IntegracionPortalPronobisTest/WebServiceInmobiliaria.asmx";
+  "http://200.41.89.145:8091/IntegracionPortalPronobis/WebServiceInmobiliaria.asmx";
 
 export const callPronobisGet = async (
   method: string,

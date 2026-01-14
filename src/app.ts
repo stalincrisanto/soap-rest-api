@@ -1,6 +1,7 @@
 import express from "express";
 import clienteRoutes from "./routes/poblarCliente.routes";
 import poblarTablasRoutes from "./routes/poblarTablas.routes";
+import checkRoutes from "./routes/check.routes";
 import cors from "cors";
 
 const app = express();
@@ -9,5 +10,6 @@ app.use(express.json());
 
 app.use("/api/cliente-proyectos", clienteRoutes);
 app.use("/api/poblar-tablas", poblarTablasRoutes);
+app.use("/api/check", checkRoutes);
 
 export default app;
