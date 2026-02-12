@@ -189,22 +189,3 @@ export const poblarTablasSdp = async (cedula: string) => {
     }
   }
 };
-
-// Version anterior con tablas de cliente y cedula
-// const cliente = data.cliente?.cliente;
-// if (!cliente) {
-//   throw new Error(`No existe cliente para la cédula ${cedula}`);
-// }
-
-// let clienteId: string;
-// let cedulaId: string;
-
-// const existente = await obtenerClienteYCedulaPorValorCedula(cedula);
-
-// if (existente) {
-//   ({ clienteId, cedulaId } = existente);
-// } else {
-//   const result = await poblarCedulaYCliente(cedula, cliente);
-//   clienteId = result.clienteId;
-//   cedulaId = result.cedulaId;
-// }
