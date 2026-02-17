@@ -1,4 +1,5 @@
 import { sdpHttpClient } from "../../../clients/sdpHttp.client";
+import { logger } from "../../../utils/logger";
 
 export async function poblarCedulaYCliente(
   cedula: string,
@@ -54,15 +55,19 @@ export async function poblarCedulaYCliente(
 
     const clienteId = clienteResponse.data?.cm_cliente?.id;
 
+    logger.success("Cédula y cliente creados", { cedula, cliente, cedulaId, clienteId });
+
     return { cedulaId, clienteId };
   } catch (error: any) {
     const sdpMessage =
       error.response?.data?.message || error.response?.data || error.message;
 
-    console.error("Error al poblar cédula y nombres:", sdpMessage);
+    logger.error("Error al poblar cédula y cliente", {
+      cedula,
+      cliente,
+      message: sdpMessage,
+    });
 
-    throw new Error(
-      `Error al poblar cédula y nombres: ${JSON.stringify(sdpMessage)}`
-    );
+    throw new Error(`Error al poblar cédula y nombres: ${JSON.stringify(sdpMessage)}`);
   }
 }
