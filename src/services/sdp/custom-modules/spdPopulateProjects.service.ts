@@ -1,15 +1,14 @@
 import { sdpHttpClient } from "../../../clients/sdpHttp.client";
 import { mapProyectoToSdpInput } from "../../../mappers/proyectoSdp.mapper";
+import { logger } from "../../../utils/logger";
 
 export async function poblarProyectos(
   proyectos: string[],
-  cedula: string,
+  cedula: string
 ): Promise<void> {
   for (const nombreProyecto of proyectos) {
     const body = new URLSearchParams({
-      input_data: JSON.stringify(
-        mapProyectoToSdpInput(nombreProyecto, cedula)
-      ),
+      input_data: JSON.stringify(mapProyectoToSdpInput(nombreProyecto, cedula)),
     });
 
     try {
@@ -18,9 +17,13 @@ export async function poblarProyectos(
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
+
+      logger.success("Proyecto creado", { cedula, nombreProyecto });
     } catch (error: any) {
       const message =
         error.response?.data?.message || error.response?.data || error.message;
+
+      logger.error("Error creando proyecto", { cedula, nombreProyecto, message });
 
       throw new Error(
         `Error creando proyecto '${nombreProyecto}': ${JSON.stringify(message)}`

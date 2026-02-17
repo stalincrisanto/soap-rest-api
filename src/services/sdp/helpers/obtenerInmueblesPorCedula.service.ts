@@ -3,10 +3,13 @@ import {
   CmInmuebleSearchResponse,
   CmInmueble,
 } from "../../../types/sdp/cm-inmueble.response";
+import { logger } from "../../../utils/logger";
 
 export const obtenerInmueblesPorCedula = async (
   cedula: string
 ): Promise<CmInmueble[]> => {
+  logger.process("Consultando inmuebles en SDP", { cedula });
+
   const inputData = {
     list_info: {
       search_criteria: {
@@ -37,5 +40,8 @@ export const obtenerInmueblesPorCedula = async (
     }
   );
 
-  return response.data.cm_inmueble ?? [];
+  const inmuebles = response.data.cm_inmueble ?? [];
+  logger.success("Inmuebles SDP obtenidos", { cedula, total: inmuebles.length });
+
+  return inmuebles;
 };

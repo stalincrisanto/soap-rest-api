@@ -3,10 +3,13 @@ import {
   CmProyecto,
   CmProyectoSearchResponse,
 } from "../../../types/sdp/cm-proyectos.response";
+import { logger } from "../../../utils/logger";
 
 export const obtenerProyectosPorCedula = async (
   cedula: string
 ): Promise<CmProyecto[]> => {
+  logger.process("Consultando proyectos en SDP", { cedula });
+
   const inputData = {
     list_info: {
       search_criteria: {
@@ -32,5 +35,8 @@ export const obtenerProyectosPorCedula = async (
     }
   );
 
-  return response.data.cm_proyecto ?? [];
+  const proyectos = response.data.cm_proyecto ?? [];
+  logger.success("Proyectos SDP obtenidos", { cedula, total: proyectos.length });
+
+  return proyectos;
 };

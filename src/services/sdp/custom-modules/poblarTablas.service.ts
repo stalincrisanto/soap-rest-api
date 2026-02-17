@@ -1,7 +1,6 @@
 import { obtenerInmuebles } from "../../pronobis/inmueble.service";
 import { obtenerPisos } from "../../pronobis/piso.service";
 import { obtenerClienteYProyectos } from "../../pronobis/pronobis.service";
-import { obtenerClienteYCedulaPorValorCedula } from "../helpers/obtenerClienteYCedulaPorCedula.service";
 import { obtenerInmueblesPorCedula } from "../helpers/obtenerInmueblesPorCedula.service";
 import { obtenerPisosPorCedula } from "../helpers/obtenerPisosPorProyecto.service";
 import { obtenerProyectosPorCedula } from "../helpers/obtenerPryPorCedula.service";
@@ -11,20 +10,21 @@ import {
   obtenerInmueblesNuevos,
   obtenerProyectosNuevos,
 } from "../helpers/proyecto.helper";
-import { poblarCedulaYCliente } from "./sdpPopulateClientAndCardNumber.service";
 import { poblarPisos } from "./sdpPopulateFloors.service";
 import { poblarInmuebles } from "./sdpPopulateInmueble.service";
 import { poblarProyectos } from "./spdPopulateProjects.service";
+import { logger } from "../../../utils/logger";
 
 export const poblarTablasSdp = async (cedula: string) => {
+  logger.process("Inicio de proceso integral SDP", { cedula });
+
   const { data } = await obtenerClienteYProyectos(cedula);
 
   const proyectos = data.proyectos ?? [];
-  if (proyectos.length === 0) return;
-
-  /* =====================================================
-   * FASE 1 – PROYECTOS
-   * ===================================================== */
+  if (proyectos.length === 0) {
+    logger.success("Sin proyectos para procesar", { cedula });
+    return;
+  }
 
   const proyectosPronobis = proyectos.map((p) => p.nombreProyecto.trim());
 
@@ -37,32 +37,31 @@ export const poblarTablasSdp = async (cedula: string) => {
   );
 
   if (proyectosNuevos.length > 0) {
-    await poblarProyectos(proyectosNuevos, cedula);
+    logger.process("Creando proyectos nuevos", {
+      cedula,
+      cantidad: proyectosNuevos.length,
+    });
 
-    // 🔄 refrescar proyectos SDP (IDs necesarios para pisos)
+    await poblarProyectos(proyectosNuevos, cedula);
     proyectosExistentes = await obtenerProyectosPorCedula(cedula);
   }
 
-  /* =====================================================
-   * FASE 2 – PISOS
-   * ===================================================== */
-
-  // 🔹 Todos los pisos SDP por cédula (filtrado luego en memoria)
   const todosLosPisos = await obtenerPisosPorCedula(cedula);
 
   for (const proyecto of proyectos) {
     const { codigoCompania, codigoProyecto, nombreProyecto } = proyecto;
 
-    // 🔹 Proyecto SDP correspondiente
     const proyectoSdp = proyectosExistentes.find(
       (p) =>
         p.cm_attributes.txt_name.trim().toLowerCase() ===
         nombreProyecto.trim().toLowerCase()
     );
 
-    if (!proyectoSdp) continue;
+    if (!proyectoSdp) {
+      logger.error("Proyecto no encontrado en SDP", { cedula, nombreProyecto });
+      continue;
+    }
 
-    // 🔹 Pisos desde PRONOBIS (source of truth)
     const responsePisos = await obtenerPisos(
       cedula,
       String(codigoCompania),
@@ -72,12 +71,10 @@ export const poblarTablasSdp = async (cedula: string) => {
     const pisosPronobis = responsePisos.data ?? [];
     if (pisosPronobis.length === 0) continue;
 
-    // 🔹 Pisos SDP del proyecto
     const pisosPorProyecto = todosLosPisos.filter(
       (p) => p.cm_attributes.ref_proyecto.id === proyectoSdp.id
     );
 
-    // 🔹 Nombres de pisos para diff
     const nombresPisosPronobis = pisosPronobis
       .map((p) => p.nombrePiso?.trim())
       .filter((p): p is string => Boolean(p));
@@ -86,32 +83,27 @@ export const poblarTablasSdp = async (cedula: string) => {
       p.cm_attributes.txt_name.trim()
     );
 
-    const pisosNuevos = obtenerPisosNuevos(
-      nombresPisosPronobis,
-      nombresPisosSdp
-    );
+    const pisosNuevos = obtenerPisosNuevos(nombresPisosPronobis, nombresPisosSdp);
 
     if (pisosNuevos.length > 0) {
+      logger.process("Creando pisos nuevos", {
+        cedula,
+        proyecto: nombreProyecto,
+        cantidad: pisosNuevos.length,
+      });
+
       await poblarPisos(pisosNuevos, cedula, proyectoSdp.id);
 
-      // 🔄 refrescar pisos SDP para inmuebles
-      // (opcional pero seguro)
       const pisosActualizados = await obtenerPisosPorCedula(cedula);
       todosLosPisos.splice(0, todosLosPisos.length, ...pisosActualizados);
     }
   }
 
-  /* =====================================================
-   * FASE 3 – INMUEBLES
-   * ===================================================== */
-
-  // 🔹 Todos los inmuebles SDP por cédula
   const todosLosInmuebles = await obtenerInmueblesPorCedula(cedula);
 
   for (const proyecto of proyectos) {
     const { codigoCompania, codigoProyecto, nombreProyecto } = proyecto;
 
-    // 🔹 Proyecto SDP
     const proyectoSdp = proyectosExistentes.find(
       (p) =>
         p.cm_attributes.txt_name.trim().toLowerCase() ===
@@ -120,14 +112,12 @@ export const poblarTablasSdp = async (cedula: string) => {
 
     if (!proyectoSdp) continue;
 
-    // 🔹 Pisos SDP del proyecto
     const pisosPorProyecto = todosLosPisos.filter(
       (p) => p.cm_attributes.ref_proyecto.id === proyectoSdp.id
     );
 
     if (pisosPorProyecto.length === 0) continue;
 
-    // 🔹 Pisos PRONOBIS (con códigos reales)
     const responsePisos = await obtenerPisos(
       cedula,
       String(codigoCompania),
@@ -140,7 +130,6 @@ export const poblarTablasSdp = async (cedula: string) => {
     for (const pisoPronobis of pisosPronobis) {
       const { codigoPiso, nombrePiso } = pisoPronobis;
 
-      // 🔹 Piso SDP correspondiente (por nombre)
       const pisoSdp = pisosPorProyecto.find(
         (p) =>
           p.cm_attributes.txt_name.trim().toLowerCase() ===
@@ -149,12 +138,11 @@ export const poblarTablasSdp = async (cedula: string) => {
 
       if (!pisoSdp) continue;
 
-      // 🔹 Inmuebles desde PRONOBIS (USANDO CÓDIGO DE PISO)
       const responseInmuebles = await obtenerInmuebles(
         cedula,
         String(codigoCompania),
         String(codigoProyecto),
-        String(codigoPiso) // 👈 CLAVE
+        String(codigoPiso)
       );
 
       const nombresInmueblesPronobis =
@@ -164,7 +152,6 @@ export const poblarTablasSdp = async (cedula: string) => {
 
       if (nombresInmueblesPronobis.length === 0) continue;
 
-      // 🔹 Inmuebles SDP por piso
       const inmueblesPorPiso = todosLosInmuebles.filter(
         (i) => i.cm_attributes.ref_piso.id === pisoSdp.id
       );
@@ -179,13 +166,17 @@ export const poblarTablasSdp = async (cedula: string) => {
       );
 
       if (inmueblesNuevos.length > 0) {
-        await poblarInmuebles(
-          inmueblesNuevos,
+        logger.process("Creando inmuebles nuevos", {
           cedula,
-          proyectoSdp.id,
-          pisoSdp.id
-        );
+          proyecto: nombreProyecto,
+          piso: nombrePiso,
+          cantidad: inmueblesNuevos.length,
+        });
+
+        await poblarInmuebles(inmueblesNuevos, cedula, proyectoSdp.id, pisoSdp.id);
       }
     }
   }
+
+  logger.success("Proceso integral SDP finalizado", { cedula });
 };
