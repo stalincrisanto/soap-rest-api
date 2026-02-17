@@ -1,7 +1,13 @@
 import app from "./app";
+import { appLogger, errorLogger } from "./logger";
 
 const PORT = 3000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor REST corriendo en puerto ${PORT}`);
+const server = app.listen(PORT, () => {
+  appLogger("Servidor REST corriendo en puerto %d", PORT);
+});
+
+server.on("error", (error) => {
+  errorLogger("Error al iniciar el servidor: %O", error);
+  process.exit(1);
 });
