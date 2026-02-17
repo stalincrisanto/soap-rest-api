@@ -16,23 +16,6 @@ app.use((req, _res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  const start = Date.now();
-
-  res.on("finish", () => {
-    const durationMs = Date.now() - start;
-    httpLogger(
-      "%s %s -> %d (%dms)",
-      req.method,
-      req.originalUrl,
-      res.statusCode,
-      durationMs
-    );
-  });
-
-  next();
-});
-
 app.use("/api/cliente-proyectos", clienteRoutes);
 app.use("/api/poblar-tablas", poblarTablasRoutes);
 app.use("/api/check", checkRoutes);
