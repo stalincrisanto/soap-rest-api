@@ -1,9 +1,12 @@
 import { sdpHttpClient } from "../../../clients/sdpHttp.client";
 import { CmClienteSearchResponse } from "../../../types/sdp/cm-cliente.response";
+import { logger } from "../../../utils/logger";
 
 export const obtenerClienteYCedulaPorValorCedula = async (
   cedula: string
 ): Promise<{ clienteId: string; cedulaId: string } | null> => {
+  logger.process("Consultando cliente y cédula en SDP", { cedula });
+
   const inputData = {
     list_info: {
       search_criteria: {
@@ -32,11 +35,20 @@ export const obtenerClienteYCedulaPorValorCedula = async (
   const registros = response.data.cm_cliente;
 
   if (!registros || registros.length === 0) {
+    logger.success("No existe relación cliente-cédula en SDP", { cedula });
     return null;
   }
 
-  return {
+  const result = {
     clienteId: registros[0].id,
     cedulaId: registros[0].cm_attributes.ref_cedula.id,
   };
+
+  logger.success("Cliente y cédula encontrados en SDP", {
+    cedula,
+    clienteId: result.clienteId,
+    cedulaId: result.cedulaId,
+  });
+
+  return result;
 };

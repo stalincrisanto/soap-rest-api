@@ -1,4 +1,5 @@
 import { sdpHttpClient } from "../../../clients/sdpHttp.client";
+import { logger } from "../../../utils/logger";
 
 export const poblarInmuebles = async (
   inmuebles: string[],
@@ -25,5 +26,7 @@ export const poblarInmuebles = async (
         "Content-Type": "application/x-www-form-urlencoded",
       },
     });
+
+    logger.success("Inmueble creado", { cedula, proyectoSdpId, pisoSdpId, inmueble });
   }
 };

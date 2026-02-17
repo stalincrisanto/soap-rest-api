@@ -1,4 +1,5 @@
 import { sdpHttpClient } from "../../../clients/sdpHttp.client";
+import { logger } from "../../../utils/logger";
 
 export const poblarPisos = async (
   pisos: string[],
@@ -23,5 +24,7 @@ export const poblarPisos = async (
         "Content-Type": "application/x-www-form-urlencoded",
       },
     });
+
+    logger.success("Piso creado", { cedula, proyectoId, piso });
   }
 };
