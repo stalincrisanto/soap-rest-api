@@ -1,4 +1,4 @@
-import { Inmueble } from "../types/pronobisInmueble";
+import { Inmueble } from "../types/pronobis/pronobisInmueble";
 
 export const mapInmueble = (row: any): Inmueble => ({
   codigoInmueble: row.CCiInmueble?.trim(),

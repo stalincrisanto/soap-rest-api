@@ -1,7 +1,7 @@
 import express from "express";
-import clienteRoutes from "./routes/pronobis.routes";
-import pisosRoutes from "./routes/pisos.routes";
-import inmueblesRoutes from "./routes/inmuebles.routes";
+import clienteRoutes from "./routes/poblarCliente.routes";
+import poblarTablasRoutes from "./routes/poblarTablas.routes";
+import checkRoutes from "./routes/check.routes";
 import cors from "cors";
 import { httpLogger } from "./logger";
 
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/cliente-proyectos", clienteRoutes);
-app.use("/api/pisos", pisosRoutes);
-app.use("/api/inmuebles", inmueblesRoutes);
+app.use("/api/poblar-tablas", poblarTablasRoutes);
+app.use("/api/check", checkRoutes);
 
 export default app;

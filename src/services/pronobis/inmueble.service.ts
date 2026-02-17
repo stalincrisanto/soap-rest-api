@@ -1,5 +1,5 @@
-import { callPronobisGet } from "./httpClient";
-import { mapInmueble } from "./inmueble.mapper";
+import { callPronobisGet } from "../../clients/pronobis.httpClient";
+import { mapInmueble } from "../../mappers/inmueble.mapper";
 
 export const obtenerInmuebles = async (
   identificacion: string,

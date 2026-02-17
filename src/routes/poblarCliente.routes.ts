@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { consultarInfoPronobis } from "../controllers/pronobis.controller";
+import { consultarInfoPronobis } from "../controllers/poblarCliente.controller";
 
 const router = Router();
 

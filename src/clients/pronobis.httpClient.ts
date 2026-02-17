@@ -1,13 +1,20 @@
 import axios from "axios";
 import xml2js from "xml2js";
-import { parseSoapDataset } from "./soapGenericParser";
+import { parseSoapDataset } from "../utils/soapGenericParser";
+import https from "https";
 
 const BASE_URL =
-  "http://200.41.89.145:8091/IntegracionPortalPronobisTest/WebServiceInmobiliaria.asmx";
+  "https://200.41.89.145:8090/IntegracionPortalPronobis/WebServiceInmobiliaria.asmx";
+
+// const BASE_URL = "https://10.120.4.26:8090/IntegracionPortalPronobis/WebServiceInmobiliaria.asmx";
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 export const callPronobisGet = async (
   method: string,
-  params: Record<string, string>
+  params: Record<string, string>,
 ): Promise<any[] | null> => {
   try {
     const query = new URLSearchParams(params).toString();
@@ -15,6 +22,7 @@ export const callPronobisGet = async (
     const url = `${BASE_URL}/${method}?${query}`;
 
     const response = await axios.get(url, {
+      httpsAgent,
       headers: { "Content-Type": "application/xml" },
     });
 

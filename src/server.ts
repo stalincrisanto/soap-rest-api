@@ -1,7 +1,7 @@
 import app from "./app";
 import { appLogger, errorLogger } from "./logger";
 
-const PORT = 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const server = app.listen(PORT, () => {
   appLogger("Servidor REST corriendo en puerto %d", PORT);

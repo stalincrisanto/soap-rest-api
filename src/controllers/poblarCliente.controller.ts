@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { obtenerClienteYProyectos } from "../services/pronobis.service";
+import { obtenerClienteYProyectos } from "../services/pronobis/pronobis.service";
 
 export const consultarInfoPronobis = async (req: Request, res: Response) => {
   const { cedula } = req.params;

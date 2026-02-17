@@ -1,4 +1,4 @@
-import { Cliente } from "../types/pronobisClienteProyectos";
+import { Cliente } from "../types/pronobis/pronobisClienteProyectos";
 
 export const mapCliente = (row: any): Cliente => ({
   tipoDocumento: row.CCiTipoIdentificacion?.trim(),
